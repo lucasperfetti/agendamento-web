@@ -8,6 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 public class UsuarioService {
 
@@ -24,5 +27,16 @@ public class UsuarioService {
         repository.save(usuario);
 
         return new UsuarioResponse(usuario.getId(), usuario.getNome(), usuario.getEmail());
+    }
+
+    public List<UsuarioResponse> listarTodos() {
+        return repository.findAll().stream()
+                .map(u -> new UsuarioResponse(u.getId(), u.getNome(), u.getEmail()))
+                .collect(Collectors.toList());
+    }
+
+    public Usuario buscarPorId(Long id) {
+        return repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
     }
 }

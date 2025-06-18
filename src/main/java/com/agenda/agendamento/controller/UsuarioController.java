@@ -7,6 +7,8 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/usuarios")
 public class UsuarioController {
@@ -17,5 +19,10 @@ public class UsuarioController {
     @PostMapping
     public UsuarioResponse cadastrar(@RequestBody @Valid UsuarioRequest request) {
         return service.criarUsuario(request);
+    }
+
+    @GetMapping
+    public List<UsuarioResponse> listarTodos() {
+        return service.listarTodos();
     }
 }
