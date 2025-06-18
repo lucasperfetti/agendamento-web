@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Usuários Cadastrados</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <h1>Usuários Cadastrados</h1>
+
+  <nav>
+    <a href="/index.html">Início</a>
+    <a href="/usuarios.html">Cadastrar Usuário</a>
+    <a href="/listar-usuarios.html">Ver Usuários</a>
+  </nav>
+
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Nome</th>
+        <th>Email</th>
+      </tr>
+    </thead>
+    <tbody id="tabela-usuarios">
+      <!-- Os usuários serão adicionados aqui via JavaScript -->
+    </tbody>
+  </table>
+
+  <script>
+    fetch('/api/usuarios')
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Erro ao buscar usuários');
+        }
+        return response.json();
+      })
+      .then(data => {
+        const tabela = document.getElementById('tabela-usuarios');
+        data.forEach(usuario => {
+          const linha = document.createElement('tr');
+          linha.innerHTML = `
+            <td>${usuario.id}</td>
+            <td>${usuario.nome}</td>
+            <td>${usuario.email}</td>
+          `;
+          tabela.appendChild(linha);
+        });
+      })
+      .catch(error => {
+        const tabela = document.getElementById('tabela-usuarios');
+        const linhaErro = document.createElement('tr');
+        linhaErro.innerHTML = `<td colspan="3" style="color: red;">${error.message}</td>`;
+        tabela.appendChild(linhaErro);
+      });
+  </script>
+</body>
+</html>
