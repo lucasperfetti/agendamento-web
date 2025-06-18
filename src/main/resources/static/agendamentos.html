@@ -1,0 +1,56 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lista de Agendamentos</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <h1>Agendamentos</h1>
+  <table>
+    <thead>
+      <tr>
+        <th>Data</th>
+        <th>Hora</th>
+        <th>Descrição</th>
+        <th>Usuário</th>
+        <th>Ações</th>
+      </tr>
+    </thead>
+    <tbody id="tabela-agendamentos">
+      <!-- Dados vão ser inseridos via JS -->
+    </tbody>
+  </table>
+  <script>
+    fetch('/api/agendamentos')
+      .then(response => response.json())
+      .then(data => {
+        const tabela = document.getElementById('tabela-agendamentos');
+        data.forEach(item => {
+          const linha = document.createElement('tr');
+          const dataHora = item.dataHora ? item.dataHora.split('T') : ['-', '-'];
+          const data = dataHora[0];
+          const hora = dataHora[1] ? dataHora[1].slice(0,5) : '-';
+          linha.innerHTML = `
+            <td>${data}</td>
+            <td>${hora}</td>
+            <td>${item.descricao}</td>
+            <td>${item.nomeUsuario}</td>
+            <td>
+              <a href="/novo-agendamento.html?id=${item.id}">Editar</a>
+              <button onclick="excluir(${item.id})">Excluir</button>
+            </td>
+          `;
+          tabela.appendChild(linha);
+        });
+      });
+
+    function excluir(id) {
+      fetch(`/api/agendamentos/${id}`, { method: 'DELETE' })
+        .then(() => location.reload());
+    }
+  </script>
+</body>
+</html>
